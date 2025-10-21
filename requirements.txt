@@ -1,0 +1,17 @@
+langchain
+ipykernel
+python-dotenv
+langchain_groq
+langchain_core
+fastapi
+langserve
+sse_starlette
+langchain_community
+langchain_chroma
+langchain_huggingface
+sentence-transformers
+bs4
+fitz
+PyMuPDF
+streamlit
+pypdf
