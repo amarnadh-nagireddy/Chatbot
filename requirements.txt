@@ -14,4 +14,8 @@ bs4
 fitz
 PyMuPDF
 streamlit
+Flask
+flask-socketio
+eventlet
+werkzeug
 pypdf
