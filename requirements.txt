@@ -9,6 +9,7 @@ sse_starlette
 langchain_community
 langchain_chroma
 langchain_huggingface
+langchain.text_splitter
 sentence-transformers
 bs4
 fitz
@@ -20,4 +21,5 @@ eventlet
 werkzeug
 pypdf
 gunicorn
+
 
