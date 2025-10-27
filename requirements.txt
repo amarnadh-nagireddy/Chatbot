@@ -18,7 +18,8 @@ flask-socketio
 eventlet
 werkzeug
 pypdf
-gunicorn
+uvicorn
+
 
 
 
