@@ -91,4 +91,3 @@ def get_rag_chain(vectorstore: Chroma):
 
     return conversational_rag_chain
 
-
