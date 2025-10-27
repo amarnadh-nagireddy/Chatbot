@@ -4,6 +4,7 @@ langchain_groq
 langchain_core
 fastapi
 langserve
+langchain-text-splitters
 sse_starlette
 langchain_community
 langchain_chroma
@@ -18,6 +19,7 @@ eventlet
 werkzeug
 pypdf
 gunicorn
+
 
 
 
