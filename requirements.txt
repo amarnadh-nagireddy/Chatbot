@@ -1,5 +1,4 @@
 langchain
-ipykernel
 python-dotenv
 langchain_groq
 langchain_core
@@ -11,16 +10,15 @@ langchain_chroma
 langchain_huggingface
 langchain
 sentence-transformers
-bs4
 fitz
 PyMuPDF
-streamlit
 Flask
 flask-socketio
 eventlet
 werkzeug
 pypdf
 gunicorn
+
 
 
 
