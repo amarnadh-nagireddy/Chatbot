@@ -17,7 +17,7 @@ load_dotenv()
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY", "")
 os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN", "")
 
-# ---------------- LLM & embeddings ----------------
+
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 llm = ChatGroq(
     groq_api_key=os.environ["GROQ_API_KEY"],
@@ -25,41 +25,40 @@ llm = ChatGroq(
 )
 
 PERSIST_DIR = "chroma_persist"
-client = PersistentClient(path=PERSIST_DIR)  # persistent Chroma client
+client = PersistentClient(path=PERSIST_DIR)
 
-def create_vector_embedding(file_path):
-    """
-    Embed a PDF and store it in Chroma.
-    No tracking, no list, no deletion.
-    """
+
+def load_or_create_vectorstore():
     vectorstore = Chroma(
         client=client,
         collection_name="rag_collection",
         embedding_function=embeddings
     )
+    return vectorstore
+
+
+
+def create_vector_embedding(file_path):
+    vectorstore = load_or_create_vectorstore() 
 
     filename = os.path.basename(file_path)
     loader = PyPDFLoader(file_path)
     documents = loader.load()
-
-    # Add metadata for source tracking (optional)
     for doc in documents:
         doc.metadata["source"] = filename
-
-    # Split documents into chunks
     splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=160)
     final_docs = splitter.split_documents(documents)
-
-    # Add documents to Chroma
     vectorstore.add_documents(final_docs)
-
+    try:
+        os.remove(file_path)
+        print(f"Successfully deleted source file: {file_path}")
+    except OSError as e:
+        print(f"Error deleting source file {file_path}: {e}")
     return vectorstore
 
 
 def get_rag_chain(vectorstore: Chroma):
-    retriever = vectorstore.as_retriever()
-
-    # QA prompt
+    retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
     system_prompt = (
         "You are a Theory of Computation teacher bot providing accurate, concise answers. "
         "Use the following context to answer the question. If you don't know, say so truthfully. "
@@ -72,8 +71,6 @@ def get_rag_chain(vectorstore: Chroma):
     ])
     question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
     rag_chain = create_retrieval_chain(retriever, question_answer_chain)
-
-    # Session history store
     store = {}
 
     def get_session_history(session_id: str) -> BaseChatMessageHistory:
